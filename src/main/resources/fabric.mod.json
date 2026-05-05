@@ -1,11 +1,12 @@
 {
 	"schemaVersion": 1,
-	"id": "examplemod",
+	"id": "computers",
 	"version": "${version}",
-	"name": "Example Mod",
+	"name": "MelTech Computers",
 	"description": "This mod aims to help new BTA modders.",
 	"authors": [
-		"Turnip Labs"
+		"TheMidford",
+		"UselessBullets"
 	],
 	"contact": {
 		"homepage": "",
@@ -16,20 +17,23 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"turniplabs.examplemod.ExampleMod"
+          "malicedev.computers.Main"
 		],
 		"beforeGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+          "malicedev.computers.Main"
 		],
 		"afterGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+          "malicedev.computers.Main"
 		],
 		"recipesReady": [
-			"turniplabs.examplemod.ExampleMod"
+          "malicedev.computers.Main"
+		],
+		"initModels": [
+					"malicedev.computers.ModModels"
 		]
 	},
 	"mixins": [
-		"examplemod.mixins.json"
+		"computers.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=${fabricloader}",
