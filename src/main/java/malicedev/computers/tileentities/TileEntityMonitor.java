@@ -1,14 +1,14 @@
 package malicedev.computers.tileentities;
 
 import com.mojang.nbt.tags.CompoundTag;
-import net.minecraft.client.Minecraft;
+import malicedev.computers.logic.CPUInstructions;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.util.helper.MathHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-import static malicedev.computers.logic.CPUInstructions.Execute;
+import static malicedev.computers.logic.CPUInstructions.execute;
 
 public class TileEntityMonitor extends TileEntity {
 	public TileEntityMonitor (){
@@ -25,14 +25,14 @@ public class TileEntityMonitor extends TileEntity {
 	public int instruction = 0x00;
 
 	public boolean getVRAMBit(int bitaddress){
-		return (VRAM[bitaddress>>3] & (0b1 << (bitaddress & 0b111))) != 0;
+		return (VRAM[bitaddress>>3] & (0b1 << (0b111 - (bitaddress & 0b111)))) != 0;
 
 	}
 	public void setVRAMBit(int bitaddress,boolean value){
 		if (value) {
-			VRAM[bitaddress >> 3] |= (0b1 << (bitaddress & 0b111));
+			VRAM[bitaddress >> 3] |= (0b1 << (0b111 - (bitaddress & 0b111)));
 		} else {
-			VRAM[bitaddress >> 3] &= ~(0b1 << (bitaddress & 0b111));
+			VRAM[bitaddress >> 3] &= ~(0b1 << (0b111 - (bitaddress & 0b111)));
 		}
 	}
 
@@ -66,6 +66,7 @@ public class TileEntityMonitor extends TileEntity {
 	public int i = 0;
 	@Override
 	public void tick() {
+		isFilling = false;
 		if (isFilling == true) {
 			setVRAMBit(i, !getVRAMBit(i));
 			if (i < VRAM.length * 8) {
@@ -74,7 +75,7 @@ public class TileEntityMonitor extends TileEntity {
 				i = 0;
 			}
 		}
-		Execute(this);
+		execute(this);
 	}
 
 
