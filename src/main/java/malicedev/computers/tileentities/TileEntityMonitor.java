@@ -1,11 +1,14 @@
 package malicedev.computers.tileentities;
 
 import com.mojang.nbt.tags.CompoundTag;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.util.helper.MathHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+
+import static malicedev.computers.logic.CPUInstructions.Execute;
 
 public class TileEntityMonitor extends TileEntity {
 	public TileEntityMonitor (){
@@ -14,11 +17,12 @@ public class TileEntityMonitor extends TileEntity {
 
 
 	static UUID ID = null;
-	public static int resolution_width = 256;
+	public static int resolution_width = 384;
 	public static int resolution_height =256;
 	public byte[] VRAM = new byte[MathHelper.ceil((resolution_width * resolution_height)/8f)];
 	public byte[] RAM = new byte[1024*128];
 	public boolean isFilling = false;
+	public int instruction = 0x00;
 
 	public boolean getVRAMBit(int bitaddress){
 		return (VRAM[bitaddress>>3] & (0b1 << (bitaddress & 0b111))) != 0;
@@ -70,6 +74,7 @@ public class TileEntityMonitor extends TileEntity {
 				i = 0;
 			}
 		}
+		Execute(this);
 	}
 
 

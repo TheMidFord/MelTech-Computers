@@ -34,14 +34,8 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 		}
 		else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_ARROW_PURPLE.id){
 			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
-			int row = resolution_width;
-			te.setVRAMBit(0+(row*0),true);
-			te.setVRAMBit(4+(row*0),true);
-			te.setVRAMBit(0+(row*2),true);
-			te.setVRAMBit(4+(row*2),true);
-			te.setVRAMBit(1+(row*3),true);
-			te.setVRAMBit(2+(row*3),true);
-			te.setVRAMBit(3+(row*3),true);
+			te.instruction = 0x01;
+
 
 
 		}
@@ -64,6 +58,14 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 		else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_SNOWBALL.id){
 			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
 			te.isFilling = !te.isFilling;
+		}
+		else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_FIREBALL.id) {
+			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x, y, z));
+			for (int x1 = 0; x1 < resolution_width; x1++) {
+				for (int y1 = 0; y1 < te.resolution_height; y1++) {
+					te.setVRAMBit(y1 * resolution_width + x1, ((x1 + y1) & 0b1) != 0);
+				}
+			}
 		}
 
 		else{
