@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.util.helper.MathHelper;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 
@@ -19,10 +18,10 @@ public class ScreenMonitor extends Screen {
 		this.tE = tileEntityMonitor;
 	}
 
-	private TileEntityMonitor tE;
+	private final TileEntityMonitor tE;
 
 
-	private int[] VRAMBuffer = new int[resolution_width * resolution_height];
+	private final int[] VRAMBuffer = new int[resolution_width * resolution_height];
 	private static final int BufferTexture = Minecraft.getMinecraft().textureManager.createTexture(resolution_width,resolution_height);
 
 	@Override
@@ -31,11 +30,11 @@ public class ScreenMonitor extends Screen {
 	}
 
 	public void VRAMtoBuffer(){
-		for (int i = 0; i < VRAMBuffer.length; i++) {
-			if (tE.getVRAMBit(i) == true)
-				VRAMBuffer[i] = 0xFFFFFFFF;
+		for (int i = 0; i < this.VRAMBuffer.length; i++) {
+			if (this.tE.getVRAMBit(i))
+				this.VRAMBuffer[i] = 0xFFFFFFFF;
 			else{
-				VRAMBuffer[i] = 0xFF000000;
+				this.VRAMBuffer[i] = 0xFF000000;
 			}
 		}
 	}
@@ -44,42 +43,37 @@ public class ScreenMonitor extends Screen {
 		super.render(mx, my, partialTick);
 		Tessellator tes = Tessellator.instance;
 		VRAMtoBuffer();
-		this.mc.textureManager.updateTextureData(VRAMBuffer, resolution_width, resolution_height, BufferTexture);
+		this.mc.textureManager.updateTextureData(this.VRAMBuffer, resolution_width, resolution_height, BufferTexture);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, BufferTexture);
 		GL11.glColor4f(1, 1, 1,1);
-		tes.startDrawingQuads();
-
-
-		final double aspectRatio = ((double) resolution_width / resolution_height);
-		final double scale = 0.8;
-
-		final int monitorWidth;
-		final int monitorHeight;
 
 		{
-			final int screenWidth256x = (this.width / 256) * 256;
-			final int screenHeight256x = (this.height / 256) * 256;
+			GL11.glPushMatrix();
+			GL11.glTranslatef(this.width / 2f, this.height / 2f, 0);
+			GL11.glScalef(1f / this.mc.resolution.getScale(), 1f / this.mc.resolution.getScale(), 1);
 
-			if (screenHeight256x < screenWidth256x) {
-				monitorWidth  = (int) (screenWidth256x * scale * aspectRatio);
-				monitorHeight = (int) (monitorWidth / aspectRatio);
-			}
+			int padding = 100;
+			int scale = MathHelper.floor(Math.min(
+				(double) this.mc.resolution.getWidthScreenCoords()/(resolution_width + padding),
+				(double) this.mc.resolution.getHeightScreenCoords()/(resolution_height + padding)));
 
-			else {
-				monitorHeight = (int) (screenHeight256x * scale * aspectRatio);
-				monitorWidth  = (int) (monitorHeight / aspectRatio);
-			}
+			int monitorWidth = resolution_width * scale;
+			int monitorHeight = resolution_height * scale;
+
+			int minX = -monitorWidth / 2;
+			int minY = -monitorHeight / 2;
+			int maxX = minX + monitorWidth;
+			int maxY = minY + monitorHeight;
+
+			tes.startDrawingQuads();
+			tes.addVertexWithUV(minX, minY, 0, 0, 0);
+			tes.addVertexWithUV(minX, maxY, 0, 0, 1);
+			tes.addVertexWithUV(maxX, maxY, 0, 1, 1);
+			tes.addVertexWithUV(maxX, minY, 0, 1, 0);
+			tes.draw();
+
+			GL11.glPopMatrix();
 		}
-
-		tes.drawRectangleWithUV(
-			(int) (this.width / 2 - monitorWidth / 2),
-			(int) (this.height / 2 - monitorHeight / 2),
-			monitorWidth,
-			monitorHeight,
-			0, 0, 1, 1
-		);
-
-		tes.draw();
 	}
 
 	@Override
