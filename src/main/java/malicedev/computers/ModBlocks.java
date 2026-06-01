@@ -26,10 +26,6 @@ public class ModBlocks {
 		BlockMonitor = new BlockBuilder(MOD_ID)
 			.setTileEntity(() -> {
 				TileEntityMonitor te = new TileEntityMonitor();
-				Random r = new Random();
-				for (int i = 0; i < te.VRAM.length; i++) {
-					te.VRAM[i] = (byte) r.nextInt(256);
-				}
 				return te;
 
 			})

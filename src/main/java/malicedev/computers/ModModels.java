@@ -18,7 +18,7 @@ public class ModModels implements ModelEntrypoint {
 			.setAllTextures(0,"minecraft:block/polished_stone_side")
 			.setTex(0,"minecraft:block/polished_stone_top",Side.TOP)
 			.setTex(0,"minecraft:block/polished_stone_top",Side.BOTTOM)
-			.setTex(0,"minecraft:block/planks/black", Side.NORTH)
+			.setTex(0,"computers:block/monitor_front", Side.NORTH)
 		);
 	}
 
