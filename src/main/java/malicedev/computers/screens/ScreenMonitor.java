@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL11;
 
 import static malicedev.computers.tileentities.TileEntityMonitor.resolution_height;
 import static malicedev.computers.tileentities.TileEntityMonitor.resolution_width;
+import static malicedev.computers.tileentities.TileEntityMonitor.onebit_fgcolor;
+import static malicedev.computers.tileentities.TileEntityMonitor.onebit_bgcolor;
 
 
 public class ScreenMonitor extends Screen {
@@ -32,9 +34,9 @@ public class ScreenMonitor extends Screen {
 	public void VRAMtoBuffer(){
 		for (int i = 0; i < this.VRAMBuffer.length; i++) {
 			if (this.tE.getVRAMBit(i))
-				this.VRAMBuffer[i] = 0xFFFFFFFF;
+				this.VRAMBuffer[i] = onebit_fgcolor;
 			else{
-				this.VRAMBuffer[i] = 0xFF000000;
+				this.VRAMBuffer[i] = onebit_bgcolor;
 			}
 		}
 	}
