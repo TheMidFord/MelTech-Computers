@@ -7,11 +7,7 @@ import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.util.helper.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-
-import static malicedev.computers.tileentities.TileEntityMonitor.resolution_height;
-import static malicedev.computers.tileentities.TileEntityMonitor.resolution_width;
-import static malicedev.computers.tileentities.TileEntityMonitor.onebit_fgcolor;
-import static malicedev.computers.tileentities.TileEntityMonitor.onebit_bgcolor;
+import static malicedev.computers.tileentities.TileEntityMonitor.*;
 
 
 public class ScreenMonitor extends Screen {
@@ -34,9 +30,9 @@ public class ScreenMonitor extends Screen {
 	public void VRAMtoBuffer(){
 		for (int i = 0; i < this.VRAMBuffer.length; i++) {
 			if (this.tE.getVRAMBit(i))
-				this.VRAMBuffer[i] = onebit_fgcolor;
+				this.VRAMBuffer[i] = (0xFF<<24) | (VRAM[VRAM.length-6] << 16) | (VRAM[VRAM.length-5] << 8) | (VRAM[VRAM.length-4]);
 			else{
-				this.VRAMBuffer[i] = onebit_bgcolor;
+				this.VRAMBuffer[i] = (0xFF<<24) | (VRAM[VRAM.length-3] << 16) | (VRAM[VRAM.length-2] << 8) | (VRAM[VRAM.length-1]);
 			}
 		}
 	}
