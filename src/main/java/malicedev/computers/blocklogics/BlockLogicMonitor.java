@@ -22,7 +22,7 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 	public boolean onBlockRightClicked(World world, int x, int y, int z, Player player, Side side, double xHit, double yHit) {
 		if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_ARROW.id){
 			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
-			for (int i =0;i<te.VRAM.length*8;i++) {
+			for (int i =0;i<(te.VRAM.length*8)-64;i++) {
 				if (i%2==0) {
 					te.setVRAMBit(i, true);
 				}
@@ -41,7 +41,7 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 		}
 		else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_CHARGE_EXPLOSIVE.id){
 			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
-			for (int i =0;i<te.VRAM.length*8;i++) {
+			for (int i =0;i<(te.VRAM.length*8)-64;i++) {
 
 					te.setVRAMBit(i,false);
 
@@ -51,7 +51,7 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 		else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_ARROW_GOLD.id){
 			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
 			Random r = new Random();
-				for (int i = 0; i < te.VRAM.length; i++) {
+				for (int i = 0; i < (te.VRAM.length)-8; i++) {
 					te.VRAM[i] = (byte) r.nextInt(256);
 				}
 		}

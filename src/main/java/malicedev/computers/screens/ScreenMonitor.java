@@ -7,17 +7,43 @@ import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.util.helper.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-import static malicedev.computers.tileentities.TileEntityMonitor.*;
-
 
 public class ScreenMonitor extends Screen {
 	public ScreenMonitor (TileEntityMonitor tileEntityMonitor){
 		super ();
 		this.tE = tileEntityMonitor;
+		byte VideoMode = tE.VMD;
+		switch(VideoMode){
+			case 0:{
+				resolution_width = 384;
+				resolution_height = 256;
+			}
+			case 1:{
+				resolution_width = 256;
+				resolution_height = 384;
+			}
+			case 2:{
+				resolution_width = 256;
+				resolution_height = 224;
+			}
+			case 3:{
+				resolution_width = 224;
+				resolution_height = 288	;
+			}
+			case 4:{
+				resolution_width = 280;
+				resolution_height = 192	;
+			}
+			case 5:{
+				resolution_width = 640;
+				resolution_height = 360	;
+			}
+		}
 	}
 
 	private final TileEntityMonitor tE;
-
+	static int resolution_width;
+	static int resolution_height;
 
 	private final int[] VRAMBuffer = new int[resolution_width * resolution_height];
 	private static final int BufferTexture = Minecraft.getMinecraft().textureManager.createTexture(resolution_width,resolution_height);
@@ -30,9 +56,9 @@ public class ScreenMonitor extends Screen {
 	public void VRAMtoBuffer(){
 		for (int i = 0; i < this.VRAMBuffer.length; i++) {
 			if (this.tE.getVRAMBit(i))
-				this.VRAMBuffer[i] = (0xFF<<24) | (VRAM[VRAM.length-6] << 16) | (VRAM[VRAM.length-5] << 8) | (VRAM[VRAM.length-4]);
+				this.VRAMBuffer[i] = (0xFF<<24) | (tE.VRAM[tE.VRAM.length-6] << 16) | (tE.VRAM[tE.VRAM.length-5] << 8) | (tE.VRAM[tE.VRAM.length-4]);
 			else{
-				this.VRAMBuffer[i] = (0xFF<<24) | (VRAM[VRAM.length-3] << 16) | (VRAM[VRAM.length-2] << 8) | (VRAM[VRAM.length-1]);
+				this.VRAMBuffer[i] = (0xFF<<24) | (tE.VRAM[tE.VRAM.length-3] << 16) | (tE.VRAM[tE.VRAM.length-2] << 8) | (tE.VRAM[tE.VRAM.length-1]);
 			}
 		}
 	}

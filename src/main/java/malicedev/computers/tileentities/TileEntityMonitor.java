@@ -31,14 +31,22 @@ public class TileEntityMonitor extends TileEntity {
 	static UUID ID = null;
 	public static int resolution_width = 384;
 	public static int resolution_height =256;
-	public static int[] COLORRAM={0xFF000000,0xFFFFFFFF};
-	public static byte[] VRAM = new byte[(32*1024)];
+	public byte[] VRAM = new byte[(32*1024)];
 	public byte[] RAM = new byte[128*1024];
-	public static short REGA = (short)0x00000000;
-	public static short REGX = (short)0x00000000;
-	public static short REGY = (short)0x00000000;
-	public static short REGPC = 0x0000;
-	public static byte VMD = 0;
+	public int REGA = (int)0x00000000;
+	public int REGX = (int)0x00000000;
+	public int REGY = (int)0x00000000;
+	public int REGPC = 0x0000;
+	public int REGRC = 0x0000;
+	public byte VMD = 0;
+	/*Video mode register
+	0 = Default (384x256)
+	1 = Default Vertical (256x384)
+	2 = NES/Famicom Compatibility Mode (256x224)
+	3 = PAC-MAN Mode (224x288)
+	4 = Apple ][ Compatibility Mode (280x192)
+	5 = 16:9 Fullscreen (640x360)
+	 */
 	public int ramSize = 128;
 	public int vramSize = 32;
 
@@ -58,7 +66,7 @@ public class TileEntityMonitor extends TileEntity {
 	}
 
 
-	public byte getByte(short address,byte address_part2){
+	public byte getByte(int address){
 		byte value= RAM[address];
 		return value;
 	}
