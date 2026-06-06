@@ -12,18 +12,14 @@ import static malicedev.computers.logic.CPUInstructions.step;
 public class TileEntityMonitor extends TileEntity {
 	public TileEntityMonitor (){
 		super();
-		//Background Color B Value
-		VRAM[VRAM.length-1] =(byte)0x00;
-		//Background Color G Value
-		VRAM[VRAM.length-2] =(byte)0x00;
-		//Background Color R Value
-		VRAM[VRAM.length-3] =(byte)0x00;
-		//Foreground Color B Value
-		VRAM[VRAM.length-4] =(byte)0xFF;
-		//Foreground Color G Value
-		VRAM[VRAM.length-5] =(byte)0xFF;
-		//Foreground Color R Value
-		VRAM[VRAM.length-6] =(byte)0xFF;
+
+		VRAM[VRAM.length-3] =(byte)0x00; //Background Color R Value
+		VRAM[VRAM.length-2] =(byte)0x00; //Background Color G Value
+		VRAM[VRAM.length-1] =(byte)0x00; //Background Color B Value
+
+		VRAM[VRAM.length-6] =(byte)0xFF; //Foreground Color R Value
+		VRAM[VRAM.length-5] =(byte)0xFF; //Foreground Color G Value
+		VRAM[VRAM.length-4] =(byte)0xFF; //Foreground Color B Value
 
 	}
 
@@ -98,6 +94,10 @@ public class TileEntityMonitor extends TileEntity {
 	Random r = new Random();
 	@Override
 	public void tick() {
+//		for (int j = 0; j < 50; j++) {
+//			setVRAMBit(r.nextInt(VRAM.length*8), false);
+//			setVRAMBit(r.nextInt(VRAM.length*8), true);
+//		}
 		step(this);
 	}
 

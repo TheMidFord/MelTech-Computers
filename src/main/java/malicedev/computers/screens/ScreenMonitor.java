@@ -1,52 +1,67 @@
 package malicedev.computers.screens;
 
 import malicedev.computers.tileentities.TileEntityMonitor;
+import net.minecraft.client.GLAllocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.render.tessellator.Tessellator;
+import net.minecraft.core.util.helper.Color;
 import net.minecraft.core.util.helper.MathHelper;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Arrays;
+
 
 public class ScreenMonitor extends Screen {
+	private final TileEntityMonitor tE;
+	private final int resolution_width;
+	private final int resolution_height;
+
+	private final int[] VRAMBuffer;
+	private final int BufferTexture;
+
 	public ScreenMonitor (TileEntityMonitor tileEntityMonitor){
 		super ();
 		this.tE = tileEntityMonitor;
-		byte VideoMode = tE.VMD;
+		byte VideoMode = this.tE.VMD;
 		switch(VideoMode){
 			case 0:{
-				resolution_width = 384;
-				resolution_height = 256;
+				this.resolution_width = 384;
+				this.resolution_height = 256;
+				break;
 			}
 			case 1:{
-				resolution_width = 256;
-				resolution_height = 384;
+				this.resolution_width = 256;
+				this.resolution_height = 384;
+				break;
 			}
 			case 2:{
-				resolution_width = 256;
-				resolution_height = 224;
+				this.resolution_width = 256;
+				this.resolution_height = 224;
+				break;
 			}
 			case 3:{
-				resolution_width = 224;
-				resolution_height = 288	;
+				this.resolution_width = 224;
+				this.resolution_height = 288;
+				break;
 			}
 			case 4:{
-				resolution_width = 280;
-				resolution_height = 192	;
+				this.resolution_width = 280;
+				this.resolution_height = 192;
+				break;
 			}
 			case 5:{
-				resolution_width = 640;
-				resolution_height = 360	;
+				this.resolution_width = 640;
+				this.resolution_height = 360	;
+				break;
+			}
+			default: {
+				throw new RuntimeException("Invalid video mode '" + VideoMode + "'!");
 			}
 		}
+		this.VRAMBuffer = new int[this.resolution_width * this.resolution_height];
+		this.BufferTexture = Minecraft.getMinecraft().textureManager.createTexture(this.resolution_width, this.resolution_height);
 	}
-
-	private final TileEntityMonitor tE;
-	static int resolution_width;
-	static int resolution_height;
-
-	private final int[] VRAMBuffer = new int[resolution_width * resolution_height];
-	private static final int BufferTexture = Minecraft.getMinecraft().textureManager.createTexture(resolution_width,resolution_height);
 
 	@Override
 	public void tick() {
@@ -56,9 +71,9 @@ public class ScreenMonitor extends Screen {
 	public void VRAMtoBuffer(){
 		for (int i = 0; i < this.VRAMBuffer.length; i++) {
 			if (this.tE.getVRAMBit(i))
-				this.VRAMBuffer[i] = (0xFF<<24) | (tE.VRAM[tE.VRAM.length-6] << 16) | (tE.VRAM[tE.VRAM.length-5] << 8) | (tE.VRAM[tE.VRAM.length-4]);
+				this.VRAMBuffer[i] = Color.byteToIntARGB((byte) 0xFF, tE.VRAM[tE.VRAM.length-6] , tE.VRAM[tE.VRAM.length-5], tE.VRAM[tE.VRAM.length-4]);
 			else{
-				this.VRAMBuffer[i] = (0xFF<<24) | (tE.VRAM[tE.VRAM.length-3] << 16) | (tE.VRAM[tE.VRAM.length-2] << 8) | (tE.VRAM[tE.VRAM.length-1]);
+				this.VRAMBuffer[i] = Color.byteToIntARGB((byte) 0xFF, tE.VRAM[tE.VRAM.length-3] , tE.VRAM[tE.VRAM.length-2], tE.VRAM[tE.VRAM.length-1]);
 			}
 		}
 	}
@@ -67,8 +82,8 @@ public class ScreenMonitor extends Screen {
 		super.render(mx, my, partialTick);
 		Tessellator tes = Tessellator.instance;
 		VRAMtoBuffer();
-		this.mc.textureManager.updateTextureData(this.VRAMBuffer, resolution_width, resolution_height, BufferTexture);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, BufferTexture);
+		this.mc.textureManager.updateTextureData(this.VRAMBuffer, this.resolution_width, this.resolution_height, this.BufferTexture);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.BufferTexture);
 		GL11.glColor4f(1, 1, 1,1);
 
 		{
@@ -78,11 +93,11 @@ public class ScreenMonitor extends Screen {
 
 			int padding = 100;
 			int scale = MathHelper.floor(Math.min(
-				(double) this.mc.resolution.getWidthScreenCoords()/(resolution_width + padding),
-				(double) this.mc.resolution.getHeightScreenCoords()/(resolution_height + padding)));
+				(double) this.mc.resolution.getWidthScreenCoords()/(this.resolution_width + padding),
+				(double) this.mc.resolution.getHeightScreenCoords()/(this.resolution_height + padding)));
 
-			int monitorWidth = resolution_width * scale;
-			int monitorHeight = resolution_height * scale;
+			int monitorWidth = this.resolution_width * scale;
+			int monitorHeight = this.resolution_height * scale;
 
 			int minX = -monitorWidth / 2;
 			int minY = -monitorHeight / 2;
@@ -98,6 +113,12 @@ public class ScreenMonitor extends Screen {
 
 			GL11.glPopMatrix();
 		}
+	}
+
+	@Override
+	public void removed() {
+		super.removed();
+		GLAllocation.deleteTexture(this.BufferTexture); // if for some reason this doesn't actually get called, this will lead to a memory leak :)
 	}
 
 	@Override
