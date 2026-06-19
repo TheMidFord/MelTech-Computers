@@ -25,29 +25,26 @@ public class TileEntityMonitor extends TileEntity {
 
 
 	static UUID ID = null;
-	public static int resolution_width = 384;
-	public static int resolution_height =256;
-	public byte[] VRAM = new byte[(32*1024)];
-	public byte[] RAM = new byte[128*1024];
+	public boolean isON = false;
+	public int ramSize = 128;
+	public int vramSize = 32;
+	public byte[] VRAM = new byte[(vramSize*1024)];
+	public byte[] RAM = new byte[ramSize*1024];
 	public int REGA = (int)0x00000000;
 	public int REGX = (int)0x00000000;
 	public int REGY = (int)0x00000000;
-	public int REGPC = 0x0000;
-	public int REGRC = 0x0000;
+	public int REGPC = 0x00000000;
+	public int REGPCI = 0x00000000;
+	public byte REGI = 0x00;
 	public byte VMD = 0;
 	/*Video mode register
 	0 = Default (384x256)
 	1 = Default Vertical (256x384)
 	2 = NES/Famicom Compatibility Mode (256x224)
-	3 = PAC-MAN Mode (224x288)
-	4 = Apple ][ Compatibility Mode (280x192)
-	5 = 16:9 Fullscreen (640x360)
+	3 = Apple ][ Compatibility Mode (280x192)
+	4 = 16:9 Fullscreen (640x360)
 	 */
-	public int ramSize = 128;
-	public int vramSize = 32;
-
-	public boolean isFilling = false;
-	public short instruction = 0x00	;
+	byte[] currentmemory;
 
 	public boolean getVRAMBit(int bitaddress){
 		return (VRAM[bitaddress>>3] & (0b1 << (0b111 - (bitaddress & 0b111)))) != 0;
@@ -78,18 +75,19 @@ public class TileEntityMonitor extends TileEntity {
 	}
 
 	@Override
-	public void writeToNBT(@NotNull CompoundTag compoundTag) {
-		super.writeToNBT(compoundTag);
+	public void writeAdditionalData(@NotNull CompoundTag compoundTag) {
+		writeAdditionalData(compoundTag);
 		compoundTag.putByteArray("SavedVRAM",VRAM);
 	}
 
 	@Override
-	public void readFromNBT(CompoundTag compoundTag){
-		super.readFromNBT(compoundTag);
+	public void readAdditionalData(CompoundTag compoundTag){
+		readAdditionalData(compoundTag);
 		VRAM = compoundTag.getByteArray("SavedVRAM");
 
 
 	}
+
 	public int i = 0;
 	Random r = new Random();
 	@Override
@@ -98,7 +96,9 @@ public class TileEntityMonitor extends TileEntity {
 //			setVRAMBit(r.nextInt(VRAM.length*8), false);
 //			setVRAMBit(r.nextInt(VRAM.length*8), true);
 //		}
-		step(this);
+		if (isON== true) {
+			step(this);
+		}
 	}
 
 }

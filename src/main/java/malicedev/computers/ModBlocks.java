@@ -4,6 +4,7 @@ import malicedev.computers.blocklogics.BlockLogicMonitor;
 import malicedev.computers.tileentities.TileEntityMonitor;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.material.Material;
+import net.minecraft.core.block.material.Materials;
 import net.minecraft.core.util.collection.NamespaceID;
 import turniplabs.halplibe.helper.BlockBuilder;
 import turniplabs.halplibe.helper.EntityHelper;
@@ -20,8 +21,7 @@ public class ModBlocks {
 	public static Block<?> BlockMonitor;
 
 	public static void init(){
-
-		EntityHelper.createTileEntity(TileEntityMonitor.class, NamespaceID.getPermanent(MOD_ID,"monitor"));
+		EntityHelper.addMapping(TileEntityMonitor.class,new NamespaceID(MOD_ID,"monitor"));
 
 		BlockMonitor = new BlockBuilder(MOD_ID)
 			.setTileEntity(() -> {
@@ -29,7 +29,7 @@ public class ModBlocks {
 				return te;
 
 			})
-			.build("monitor","monitor",blockId++,(block) -> new BlockLogicMonitor(block, Material.glass));
+			.build("monitor","monitor",blockId++,(block) -> new BlockLogicMonitor(block, Materials.GLASS));
 	}
 
 }

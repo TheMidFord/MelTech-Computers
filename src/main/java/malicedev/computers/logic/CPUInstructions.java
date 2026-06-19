@@ -19,6 +19,7 @@ import static malicedev.computers.tileentities.TileEntityMonitor.*;
 				byte addr4 = tE.getByte((int)(tE.REGPC + 4));
 				tE.REGX = tE.getByte((int)((addr1<<24) | (addr2<<16)|(addr3 << 8)|(addr4)));
 				tE.REGPC += 5;
+				break;
 			}
 			case LDY:{
 				byte addr1 = tE.getByte((int)(tE.REGPC + 1));
@@ -27,6 +28,7 @@ import static malicedev.computers.tileentities.TileEntityMonitor.*;
 				byte addr4 = tE.getByte((int)(tE.REGPC + 4));
 				tE.REGY = tE.getByte((int)((addr1<<24) | (addr2<<16)|(addr3 << 8)|(addr4)));
 				tE.REGPC += 5;
+				break;
 			}
 
 		}

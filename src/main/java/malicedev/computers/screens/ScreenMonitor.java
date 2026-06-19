@@ -4,6 +4,7 @@ import malicedev.computers.tileentities.TileEntityMonitor;
 import net.minecraft.client.GLAllocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Screen;
+import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.util.helper.Color;
 import net.minecraft.core.util.helper.MathHelper;
@@ -41,16 +42,11 @@ public class ScreenMonitor extends Screen {
 				break;
 			}
 			case 3:{
-				this.resolution_width = 224;
-				this.resolution_height = 288;
-				break;
-			}
-			case 4:{
 				this.resolution_width = 280;
 				this.resolution_height = 192;
 				break;
 			}
-			case 5:{
+			case 4:{
 				this.resolution_width = 640;
 				this.resolution_height = 360	;
 				break;
