@@ -9,6 +9,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePosc;
 
 import java.util.Random;
 
@@ -18,9 +19,9 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 	}
 
 	@Override
-	public boolean onBlockRightClicked(World world, int x, int y, int z, Player player, Side side, double xHit, double yHit) {
+	public boolean onInteracted(World world, TilePosc tilePos, Player player, Side side, double xHit, double yHit) {
 		if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_ARROW.id){
-			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
+			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(tilePos));
 			for (int i =0;i<(te.VRAM.length*8)-64;i++) {
 				if (i%2==0) {
 					te.setVRAMBit(i, true);
@@ -33,7 +34,7 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 		}
 
 		else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_CHARGE_EXPLOSIVE.id){
-			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
+			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(tilePos));
 			for (int i =0;i<(te.VRAM.length*8)-64;i++) {
 
 					te.setVRAMBit(i,false);
@@ -42,7 +43,7 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 
 		}
 		else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().itemID == Items.AMMO_ARROW_GOLD.id){
-			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(x,y,z));
+			TileEntityMonitor te = ((TileEntityMonitor) world.getTileEntity(tilePos));
 			Random r = new Random();
 				for (int i = 0; i < (te.VRAM.length)-8; i++) {
 					te.VRAM[i] = (byte) r.nextInt(256);
@@ -51,9 +52,9 @@ public class BlockLogicMonitor extends BlockLogicRotatable {
 
 
 		else{
-		Minecraft.getMinecraft().displayScreen(new ScreenMonitor((TileEntityMonitor) world.getTileEntity(x,y,z)));
+		Minecraft.getMinecraft().displayScreen(new ScreenMonitor((TileEntityMonitor) world.getTileEntity(tilePos)));
 		}
-		return super.onBlockRightClicked(world, x, y, z, player, side, xHit, yHit);
+		return true;
 	}
 
 

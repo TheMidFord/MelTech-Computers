@@ -9,6 +9,7 @@ import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.util.helper.Color;
 import net.minecraft.core.util.helper.MathHelper;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL41;
 
 import java.util.Arrays;
 
@@ -76,16 +77,17 @@ public class ScreenMonitor extends Screen {
 	@Override
 	public void render(int mx, int my, float partialTick) {
 		super.render(mx, my, partialTick);
-		Tessellator tes = Tessellator.instance;
+		var tes = GLRenderer.getTessellator();
 		VRAMtoBuffer();
 		this.mc.textureManager.updateTextureData(this.VRAMBuffer, this.resolution_width, this.resolution_height, this.BufferTexture);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.BufferTexture);
-		GL11.glColor4f(1, 1, 1,1);
+		GL41.glBindTexture(GL41.GL_TEXTURE_2D, this.BufferTexture);
 
 		{
-			GL11.glPushMatrix();
-			GL11.glTranslatef(this.width / 2f, this.height / 2f, 0);
-			GL11.glScalef(1f / this.mc.resolution.getScale(), 1f / this.mc.resolution.getScale(), 1);
+			GLRenderer.pushFrame();
+			GLRenderer.setColor4f(1, 1, 1, 1);
+			var model = GLRenderer.modelM4f();
+			model.translate(this.width / 2f, this.height / 2f, 0);
+			model.scale(1f / this.mc.resolution.getScale(), 1f / this.mc.resolution.getScale(), 1);
 
 			int padding = 100;
 			int scale = MathHelper.floor(Math.min(
@@ -107,7 +109,7 @@ public class ScreenMonitor extends Screen {
 			tes.addVertexWithUV(maxX, minY, 0, 1, 0);
 			tes.draw();
 
-			GL11.glPopMatrix();
+			GLRenderer.popFrame();
 		}
 	}
 

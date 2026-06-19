@@ -76,26 +76,22 @@ public class TileEntityMonitor extends TileEntity {
 
 	@Override
 	public void writeAdditionalData(@NotNull CompoundTag compoundTag) {
-		writeAdditionalData(compoundTag);
 		compoundTag.putByteArray("SavedVRAM",VRAM);
 	}
 
 	@Override
 	public void readAdditionalData(CompoundTag compoundTag){
-		readAdditionalData(compoundTag);
 		VRAM = compoundTag.getByteArray("SavedVRAM");
-
-
 	}
 
 	public int i = 0;
 	Random r = new Random();
 	@Override
 	public void tick() {
-//		for (int j = 0; j < 50; j++) {
-//			setVRAMBit(r.nextInt(VRAM.length*8), false);
-//			setVRAMBit(r.nextInt(VRAM.length*8), true);
-//		}
+		for (int j = 0; j < 50; j++) {
+			setVRAMBit(r.nextInt(VRAM.length*8), false);
+			setVRAMBit(r.nextInt(VRAM.length*8), true);
+		}
 		if (isON== true) {
 			step(this);
 		}
