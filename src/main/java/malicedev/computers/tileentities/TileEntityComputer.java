@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 import java.util.UUID;
 
-import static malicedev.computers.logic.CPUInstructions.step;
+import static malicedev.computers.logic.CPU.step;
 
-public class TileEntityMonitor extends TileEntity {
-	public TileEntityMonitor (){
+public class TileEntityComputer extends TileEntity {
+	public TileEntityComputer(){
 		super();
 
 		VRAM[VRAM.length-3] =(byte)0x00; //Background Color R Value
@@ -26,10 +26,14 @@ public class TileEntityMonitor extends TileEntity {
 
 	static UUID ID = null;
 	public boolean isON = false;
+	static final int MAX_ROM_MEMORY_ALLOC_SIZE = 65536;
+	static final int MAX_RAM_MEMORY_ALLOC_SIZE = 16777216;
+	static final int MAX_VRAM_MEMORY_ALLOC_SIZE = 4194304;
 	public int ramSize = 128;
 	public int vramSize = 32;
 	public byte[] VRAM = new byte[(vramSize*1024)];
 	public byte[] RAM = new byte[ramSize*1024];
+	public byte[] ROMPlaceholder = new byte[64*1024];
 	public int REGA = (int)0x00000000;
 	public int REGX = (int)0x00000000;
 	public int REGY = (int)0x00000000;
@@ -44,7 +48,6 @@ public class TileEntityMonitor extends TileEntity {
 	3 = Apple ][ Compatibility Mode (280x192)
 	4 = 16:9 Fullscreen (640x360)
 	 */
-	byte[] currentmemory;
 
 	public boolean getVRAMBit(int bitaddress){
 		return (VRAM[bitaddress>>3] & (0b1 << (0b111 - (bitaddress & 0b111)))) != 0;
@@ -60,18 +63,42 @@ public class TileEntityMonitor extends TileEntity {
 
 
 	public byte getByte(int address){
-		byte value= RAM[address];
-		return value;
-	}
-
-
-	public void setByte(short address, byte value) {
-	}
-
-	public void getID() {
-		if (ID == null) {
-			ID = UUID.randomUUID();
+		if (address<MAX_ROM_MEMORY_ALLOC_SIZE) {
+			byte value = ROMPlaceholder[address];
+			return value;
 		}
+		if (address < MAX_ROM_MEMORY_ALLOC_SIZE + RAM.length){
+			byte value =RAM[address- MAX_ROM_MEMORY_ALLOC_SIZE];
+			return value;
+		}
+		if (address < MAX_ROM_MEMORY_ALLOC_SIZE + MAX_RAM_MEMORY_ALLOC_SIZE + VRAM.length){
+			byte value = VRAM[address-(MAX_ROM_MEMORY_ALLOC_SIZE+MAX_RAM_MEMORY_ALLOC_SIZE)];
+			return value;
+		}
+		else {
+			throw new ArrayIndexOutOfBoundsException("WRONG! [MelTech:Computers Error: Tried to access a memory address that doesn't exist (out of range).]");
+		}
+	}
+
+
+	public void setByte(int address, byte value) {
+		if (address<MAX_ROM_MEMORY_ALLOC_SIZE) {
+
+		}
+		if (address < MAX_ROM_MEMORY_ALLOC_SIZE + RAM.length){
+			RAM[address- MAX_ROM_MEMORY_ALLOC_SIZE] = value;
+		}
+		if (address < MAX_ROM_MEMORY_ALLOC_SIZE + MAX_RAM_MEMORY_ALLOC_SIZE + VRAM.length){
+			VRAM[address-(MAX_ROM_MEMORY_ALLOC_SIZE+MAX_RAM_MEMORY_ALLOC_SIZE)]=value;
+
+		}
+		else {
+			throw new ArrayIndexOutOfBoundsException("WRONG! [MelTech:Computers Error: Tried to access a memory address that doesn't exist (out of range).]");
+		}
+	}
+
+	public void handleMemoryException(int address) {
+
 	}
 
 	@Override

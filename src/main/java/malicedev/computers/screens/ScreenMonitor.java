@@ -1,30 +1,26 @@
 package malicedev.computers.screens;
 
-import malicedev.computers.tileentities.TileEntityMonitor;
+import malicedev.computers.tileentities.TileEntityComputer;
 import net.minecraft.client.GLAllocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.render.renderer.GLRenderer;
-import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.util.helper.Color;
 import net.minecraft.core.util.helper.MathHelper;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL41;
-
-import java.util.Arrays;
 
 
 public class ScreenMonitor extends Screen {
-	private final TileEntityMonitor tE;
+	private final TileEntityComputer tE;
 	private final int resolution_width;
 	private final int resolution_height;
 
 	private final int[] VRAMBuffer;
 	private final int BufferTexture;
 
-	public ScreenMonitor (TileEntityMonitor tileEntityMonitor){
+	public ScreenMonitor (TileEntityComputer tileEntityComputer){
 		super ();
-		this.tE = tileEntityMonitor;
+		this.tE = tileEntityComputer;
 		byte VideoMode = this.tE.VMD;
 		switch(VideoMode){
 			case 0:{

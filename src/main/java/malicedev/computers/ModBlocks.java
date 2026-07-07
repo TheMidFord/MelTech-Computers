@@ -1,15 +1,13 @@
 package malicedev.computers;
 
+import malicedev.computers.blocklogics.BlockLogicComputer;
 import malicedev.computers.blocklogics.BlockLogicMonitor;
-import malicedev.computers.tileentities.TileEntityMonitor;
+import malicedev.computers.tileentities.TileEntityComputer;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.material.Material;
 import net.minecraft.core.block.material.Materials;
 import net.minecraft.core.util.collection.NamespaceID;
 import turniplabs.halplibe.helper.BlockBuilder;
 import turniplabs.halplibe.helper.EntityHelper;
-
-import java.util.Random;
 
 import static malicedev.computers.Main.MOD_ID;
 import static malicedev.computers.Main.blockId;
@@ -18,18 +16,21 @@ public class ModBlocks {
 	private  ModBlocks() {};
 
 
+	public static Block<?> BlockComputer;
 	public static Block<?> BlockMonitor;
 
 	public static void init(){
-		EntityHelper.addMapping(TileEntityMonitor.class,new NamespaceID(MOD_ID,"monitor"));
+		EntityHelper.addMapping(TileEntityComputer.class,new NamespaceID(MOD_ID,"computer"));
 
-		BlockMonitor = new BlockBuilder(MOD_ID)
+		BlockComputer = new BlockBuilder(MOD_ID)
 			.setTileEntity(() -> {
-				TileEntityMonitor te = new TileEntityMonitor();
+				TileEntityComputer te = new TileEntityComputer();
 				return te;
 
 			})
-			.build("monitor","monitor",blockId++,(block) -> new BlockLogicMonitor(block, Materials.GLASS));
+			.build("computer","computer",blockId++,(block) -> new BlockLogicComputer(block, Materials.METAL));
+		BlockMonitor = new BlockBuilder(MOD_ID)
+			.build("monitor","monitor",blockId++,(block)-> new BlockLogicMonitor(block,Materials.GLASS));
 	}
 
 }
